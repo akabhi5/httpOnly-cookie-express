@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="loginform" method="POST">
+      Email: <input type="text" name="email" /> <br />
+      Password: <input type="password" name="password" /><br />
+      <input type="submit" value="Submit" />
+    </form>
+
+    <button id="signout">Signout</button>
+
+    <script>
+      function sendRequest(url, method, data) {
+        const r = axios({
+          method: method,
+          url: url,
+          data: data,
+          xsrfCookieName: "csrftoken",
+          xsrfHeaderName: "X-CSRFToken",
+          withCredentials: true,
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+          },
+        });
+        return r;
+      }
+
+      function login(e) {
+        e.preventDefault();
+        const email = e.target.email.value;
+        const password = e.target.password.value;
+
+        sendRequest("http://127.0.0.1:3000", "POST", {
+          email,
+          password,
+        });
+
+        e.target.reset();
+      }
+
+      function signout(e) {
+        sendRequest("http://127.0.0.1:3000/signout", "GET");
+      }
+
+      const loginform = document.querySelector("#loginform");
+      loginform.addEventListener("submit", login);
+
+      const signoutBtn = document.querySelector("#signout");
+      signoutBtn.addEventListener("click", signout);
+    </script>
+  </body>
+</html>
